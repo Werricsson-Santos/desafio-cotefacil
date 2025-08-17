@@ -1,74 +1,100 @@
-// src/components/Header/index.tsx
-import { AppBar, Toolbar, Container, Select, MenuItem } from '@mui/material';
-import type { SelectChangeEvent } from '@mui/material'
+import { useState, type ReactNode } from 'react';
+import { useHeader } from '../contexts/HeaderContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { applicationsData } from '../router';
+
+import { 
+  AppBar, Toolbar, Container, Box, IconButton, Drawer, 
+  List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography
+} from '@mui/material';
+
+import MenuIcon from '@mui/icons-material/Menu';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+
 import { Logo } from './Logo';
-import { applicationsData } from '../router'
+
+const iconMap: { [key: string]: ReactNode } = {
+  '/dashboard': <DashboardIcon />,
+  '/galeria-de-imagens': <PhotoLibraryIcon />,
+  '/lista-de-tarefas': <ListAltIcon />,
+};
 
 export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { title, actions } = useHeader();
 
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    const path = event.target.value;
-    if (path) {
-      navigate(path);
-    }
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setDrawerOpen(false);
   };
-
+  
   const currentPath = location.pathname;
-  const isApplicationSelected = applicationsData.some(app => app.path === currentPath);
 
   return (
-    <AppBar 
-      position="fixed"
-      color="transparent"
-      elevation={0}
-      sx={{ backdropFilter: 'blur(10px)' }}
-    >
-      <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ 
-          paddingY: { xs: 1, sm: 2 },
-          display: 'flex',
-          justifyContent: 'space-between'
-        }}>
-          <Logo />
+    <>
+      <AppBar 
+        position="sticky"
+        color="transparent"
+        elevation={0}
+        sx={{ 
+          backdropFilter: 'blur(10px)', 
+          backgroundColor: 'rgba(18, 18, 20, 0.7)',
+          top: 0, 
+        }}
+      >
+        <Container maxWidth={false} sx={{ px: { xs: 2, lg: 3 } }}>
+          <Toolbar disableGutters sx={{ paddingY: { xs: 1, sm: 2 } }}>
+            <Logo />
 
-          <Select
-            value={isApplicationSelected ? currentPath : ''}
-            onChange={handleSelectChange}
-            displayEmpty
-            variant="outlined"
-            sx={{
-              minWidth: 220,
-              color: 'text.secondary',
-              bgcolor: 'rgba(32, 32, 36, 0.7)',
-              borderRadius: 2,
-              '.MuiOutlinedInput-notchedOutline': {
-                borderColor: 'rgba(255, 255, 255, 0.23)',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'primary.main',
-              },
-              '& .MuiSelect-icon': {
-                color: 'text.secondary',
-              },
-            }}
-          >
-            {/* Placeholder quando nenhuma opção está selecionada */}
-            <MenuItem value="" disabled>
-              <em>Selecione uma aplicação</em>
-            </MenuItem>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, ml: 3 }}>
+              {title}
+            </Typography>
             
-            {/* Mapeia nossos dados para criar as opções */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }}>
+              {actions}
+            </Box>
+
+            <IconButton
+              aria-label="open drawer"
+              edge="end"
+              onClick={() => setDrawerOpen(true)}
+              sx={{
+                ml: 2,
+                color: '#66bb6a',
+              }}
+            >
+              <MenuIcon sx={{ fontSize: '2rem' }} />
+            </IconButton>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box sx={{ width: 250 }} role="presentation">
+          <List>
             {applicationsData.map((app) => (
-              <MenuItem key={app.path} value={app.path}>
-                {app.name}
-              </MenuItem>
+              <ListItem key={app.name} disablePadding>
+                <ListItemButton 
+                  onClick={() => handleNavigation(app.path)}
+                  selected={currentPath === app.path}
+                >
+                  <ListItemIcon>{iconMap[app.path] || <ListAltIcon />}</ListItemIcon>
+                  <ListItemText primary={app.name} />
+                </ListItemButton>
+              </ListItem>
             ))}
-          </Select>
-        </Toolbar>
-      </Container>
-    </AppBar>
+          </List>
+        </Box>
+      </Drawer>
+    </>
   );
 }
