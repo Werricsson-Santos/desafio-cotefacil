@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "../pages/Home";
+import { Dashboard } from "../pages/Dashboard";
 import { PlaceholderComponent } from "../components/PlaceholderComponent";
 import { RootLayout } from "../components/RootLayout";
 
@@ -29,7 +30,9 @@ const router = createBrowserRouter([
       },
       ...applicationsData.map(app => ({
         path: app.path,
-        element: <PlaceholderComponent appName={app.name} />,
+        element: app.path === '/dashboard' 
+          ? <Dashboard /> 
+          : <PlaceholderComponent appName={app.name} />,
       })),
     ]
   }

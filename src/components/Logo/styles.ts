@@ -7,7 +7,6 @@ export const LogoLink = styled(Link)({
 });
 
 export const LogoBackground = styled('div')(({ theme }) => ({
-  backgroundColor: '#FFFFFF',
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(0.5),
   display: 'flex',
