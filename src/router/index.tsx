@@ -3,6 +3,7 @@ import { Home } from "../pages/Home";
 import { Dashboard } from "../pages/Dashboard";
 import { PlaceholderComponent } from "../components/PlaceholderComponent";
 import { RootLayout } from "../components/RootLayout";
+import { TodoList } from "../pages/TodoList";
 
 export const applicationsData = [
   {
@@ -32,6 +33,8 @@ const router = createBrowserRouter([
         path: app.path,
         element: app.path === '/dashboard' 
           ? <Dashboard /> 
+          : app.path === '/lista-de-tarefas' ?
+            <TodoList />
           : <PlaceholderComponent appName={app.name} />,
       })),
     ]
