@@ -16,6 +16,10 @@ const priorityColors: { [key in TaskPriority]: 'error' | 'warning' | 'info' } = 
   high: 'error', medium: 'warning', low: 'info',
 };
 
+const priorityText: { [key in TaskPriority]: 'alta' | 'média' | 'baixa' } = {
+  high: 'alta', medium: 'média', low: 'baixa',
+};
+
 export const TaskCard: FC<TaskCardProps> = ({ task, columnId, onUpdate, onDelete, isOverlay }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
   const style: React.CSSProperties = { transform: CSS.Transform.toString(transform), transition, visibility: isDragging ? 'hidden' : 'visible' };
@@ -28,7 +32,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, columnId, onUpdate, onDelete
     actionButtonProps.text = 'Concluir';
     actionButtonProps.color = 'success';
   } else if (columnId === 'done') {
-    actionButtonProps.show = false; // Esconde o botão na coluna "Concluído" -> Não foi criado uma página para arquivar as tarefas fetias, vão ficar todas nas colunas de concluídas, o usuário pode excluir
+    actionButtonProps.show = false; // Esconde o botão na coluna "Concluído" -> Não foi criado uma página para arquivar as tarefas feitas, vão ficar todas nas colunas de concluídas, o usuário pode excluir
   }
 
   const handleMoveTask = () => {
@@ -48,7 +52,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, columnId, onUpdate, onDelete
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
           <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{task.title}</Typography>
-          <Chip label={task.priority} color={priorityColors[task.priority]} size="small" sx={{ textTransform: 'capitalize' }}/>
+          <Chip label={priorityText[task.priority]} color={priorityColors[task.priority]} size="small" sx={{ textTransform: 'capitalize' }}/>
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>{task.description}</Typography>
       </CardContent>
