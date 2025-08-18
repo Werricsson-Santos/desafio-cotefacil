@@ -49,7 +49,7 @@ export const AddImageForm: React.FC<AddImageFormProps> = ({ onAddImage }) => {
   };
 
   const handleSubmit = () => {
-    if (imageBase64 && description.trim()) {
+    if (imageBase64) {
       onAddImage(imageBase64, description.trim());
       resetForm();
     }
