@@ -16,8 +16,11 @@ import {
   FormLabel,
   Stack,
   Chip,
+  useTheme,
+  useMediaQuery,
+  IconButton,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import { CreateTaskSchema } from "../../types/dashboard";
 
 interface CreateTaskFormProps {
@@ -26,6 +29,9 @@ interface CreateTaskFormProps {
 
 export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreate }) => {
   const [open, setOpen] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClickOpen = () => setOpen(true);
 
@@ -60,9 +66,15 @@ export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreate }) 
 
   return (
     <>
-      <Button variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
-        Nova Tarefa
-      </Button>
+      {isMobile ? (
+        <IconButton color="primary" onClick={handleClickOpen} aria-label="criar nova tarefa">
+          <PostAddIcon />
+        </IconButton>
+      ) : (
+        <Button variant="contained" startIcon={<PostAddIcon />} onClick={handleClickOpen}>
+          Nova Tarefa
+        </Button>
+      )}
 
       <Dialog
         open={open}

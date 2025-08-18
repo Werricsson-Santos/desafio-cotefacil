@@ -1,7 +1,10 @@
 import { useState, useRef } from 'react';
 import { 
   Button, Dialog, DialogActions, DialogContent, DialogTitle, 
-  TextField, Stack, Typography
+  TextField, Stack, Typography,
+  useTheme,
+  useMediaQuery,
+  IconButton
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -15,6 +18,9 @@ export const AddImageForm: React.FC<AddImageFormProps> = ({ onAddImage }) => {
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [fileName, setFileName] = useState('Nenhum arquivo selecionado');
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,9 +57,19 @@ export const AddImageForm: React.FC<AddImageFormProps> = ({ onAddImage }) => {
 
   return (
     <>
-      <Button variant="contained" startIcon={<AddPhotoAlternateIcon />} onClick={() => setOpen(true)}>
-        Adicionar Imagem
-      </Button>
+      {isMobile ? (
+        <IconButton color="primary" onClick={() => setOpen(true)} aria-label="adicionar imagem">
+          <AddPhotoAlternateIcon />
+        </IconButton>
+      ) : (
+        <Button 
+          variant="contained" 
+          startIcon={<AddPhotoAlternateIcon />} 
+          onClick={() => setOpen(true)}
+        >
+          Adicionar Imagem
+        </Button>
+      )}
       <Dialog open={open} onClose={resetForm} fullWidth maxWidth="xs">
         <DialogTitle>Adicionar Nova Imagem</DialogTitle>
         <DialogContent>

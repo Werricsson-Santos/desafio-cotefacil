@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, TextField, IconButton } from '@mui/material';
+import { Box, TextField, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface SearchBarProps {
@@ -9,12 +9,25 @@ interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [query, setQuery] = useState('');
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [isExpanded, setIsExpanded] = useState(!isMobile);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
       onSearch(query.trim());
     }
   };
+
+  if (isMobile && !isExpanded) {
+    return (
+      <IconButton color="inherit" onClick={() => setIsExpanded(true)} aria-label="open search bar">
+        <SearchIcon />
+      </IconButton>
+    );
+  }
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', alignItems: 'center', width: 300 }}>
