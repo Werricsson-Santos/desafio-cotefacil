@@ -54,7 +54,7 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setTitle('Dashboard Kanban');
+    setTitle('Dashboard');
     setActions(<CreateTaskForm onTaskCreate={handleAddTask} />);
     return () => {
       setTitle('');

@@ -63,7 +63,7 @@ export const Gallery: React.FC = () => {
   };
 
   useEffect(() => {
-    setTitle('Galeria de Imagens');
+    setTitle('Galeria');
     setActions(
       <Stack direction="row" spacing={2} alignItems="center">
         <SearchBar onSearch={handleSearch} />
