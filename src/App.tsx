@@ -2,7 +2,6 @@ import { CssBaseline, ThemeProvider } from "@mui/material"
 import { HeaderProvider } from './contexts/HeaderContext';
 import { darkTheme } from "./styles/theme";
 import { AppRouter } from "./router";
-import { Footer } from "./components/Footer";
 
 export default function App() {
   return (
@@ -10,7 +9,6 @@ export default function App() {
       <CssBaseline />
       <HeaderProvider>
         <AppRouter />
-        <Footer />
       </HeaderProvider>
     </ThemeProvider>
   )

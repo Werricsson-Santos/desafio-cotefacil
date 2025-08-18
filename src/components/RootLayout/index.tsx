@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Box, Toolbar } from '@mui/material';
 import { Header } from '../Header';
+import { Footer } from '../Footer';
 
 export function RootLayout() {
   return (
@@ -19,6 +20,7 @@ export function RootLayout() {
       > 
         <Outlet />
       </Box>
+      <Footer />
     </Box>
   );
 }
