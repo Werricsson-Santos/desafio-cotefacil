@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
-import { Container, Box, CircularProgress, Typography, Button, Link } from '@mui/material';
+import { Container, Box, CircularProgress, Typography, Button, Link, useTheme, useMediaQuery, IconButton } from '@mui/material';
 import { useHeader } from '../../contexts/HeaderContext';
 import * as imageService from '../../services/imageService';
 import { type Image } from '../../types/gallery';
@@ -11,6 +11,10 @@ export const ImageDetail: React.FC = () => {
   const { setTitle, setActions } = useHeader();
   const [image, setImage] = useState<Image | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
 
   useEffect(() => {
     if (id) {
@@ -25,22 +29,32 @@ export const ImageDetail: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    setTitle(image ? `Detalhes da Imagem` : 'Carregando...');
+    setTitle(image ? `Detalhes` : 'Carregando...');
     setActions(
-      <Button
-        component={RouterLink}
-        to="/galeria-de-imagens"
-        variant="outlined"
-        startIcon={<ArrowBackIcon />}
-      >
-        Voltar
-      </Button>
-    );
+            isMobile ? (
+                <IconButton 
+                    component={RouterLink} 
+                    to="/galeria-de-imagens"
+                    aria-label="Voltar para a galeria"
+                >
+                    <ArrowBackIcon color='primary' />
+                </IconButton>
+            ) : (
+                <Button
+                    component={RouterLink}
+                    to="/galeria-de-imagens"
+                    variant="outlined"
+                    startIcon={<ArrowBackIcon />}
+                >
+                    Voltar
+                </Button>
+            )
+        );
     return () => {
       setTitle('Página Inicial');
       setActions(null);
     };
-  }, [setTitle, setActions, image]);
+  }, [setTitle, setActions, image, isMobile]);
 
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
@@ -50,11 +64,13 @@ export const ImageDetail: React.FC = () => {
     return <Typography>Imagem não encontrada.</Typography>;
   }
 
+  const imageUrl = image.isLocal ? image.urls.raw : image.urls.regular;
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Box 
         component="img" 
-        src={image.urls.regular} 
+        src={imageUrl} 
         alt={image.alt_description}
         sx={{ width: '100%', borderRadius: 2, mb: 2 }}
       />
