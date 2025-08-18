@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
-import { Container, Box, Typography, Button } from '@mui/material';
+import { Container, Box, Typography, Button, useTheme, useMediaQuery, IconButton } from '@mui/material';
 import { useHeader } from '../../contexts/HeaderContext';
 import * as imageService from '../../services/imageService';
 import { type Image } from '../../types/gallery';
@@ -11,6 +11,9 @@ export const LocalImageDetail: React.FC = () => {
   const { setTitle, setActions } = useHeader();
   const [image, setImage] = useState<Image | null>(null);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   useEffect(() => {
     if (id) {
       const foundImage = imageService.getLocalImageById(id);
@@ -20,15 +23,24 @@ export const LocalImageDetail: React.FC = () => {
 
   useEffect(() => {
     setTitle(image ? `Minha Foto` : 'Foto não encontrada');
-    setActions(
-      <Button
-        component={RouterLink}
-        to="/galeria-de-imagens"
-        variant="outlined"
-        startIcon={<ArrowBackIcon />}
-      >
-        Voltar para a Galeria
-      </Button>
+    setActions(isMobile ? (
+          <IconButton 
+              component={RouterLink} 
+              to="/galeria-de-imagens"
+              aria-label="Voltar para a galeria"
+          >
+              <ArrowBackIcon color='primary' />
+          </IconButton>
+      ) : (
+          <Button
+              component={RouterLink}
+              to="/galeria-de-imagens"
+              variant="outlined"
+              startIcon={<ArrowBackIcon />}
+          >
+              Voltar
+          </Button>
+      )
     );
     return () => {
       setTitle('Página Inicial');
