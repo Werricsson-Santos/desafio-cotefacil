@@ -18,6 +18,8 @@ export const Gallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
 
+  const [searchActive, setSearchActive] = useState(false);
+
   useEffect(() => {
     const fetchInitialImages = async () => {
       setLoading(true);
@@ -34,8 +36,19 @@ export const Gallery: React.FC = () => {
 
   const handleSearch = async (query: string) => {
     setLoading(true);
-    const searchedImages = await imageService.searchImages(query);
-    setApiImages(searchedImages);
+    const trimmedQuery = query.trim();
+
+    if (trimmedQuery === '') {
+      // Se a busca foi limpa, recarrega as imagens iniciais da API
+      const initialApiImages = await imageService.getImages();
+      setApiImages(initialApiImages);
+      setSearchActive(false); // Desativa o modo de busca
+    } else {
+      // Se há uma busca, pesquisa na API
+      const searchedImages = await imageService.searchImages(trimmedQuery);
+      setApiImages(searchedImages);
+      setSearchActive(true); // Ativa o modo de busca
+    }
     setLoading(false);
   };
   
@@ -64,10 +77,17 @@ export const Gallery: React.FC = () => {
   }, [setTitle, setActions]);
 
   const displayedImages = useMemo(() => {
+    // Se uma busca está ativa, mostramos APENAS os resultados da API (apiImages)
+    if (searchActive) {
+      return apiImages;
+    }
+    // Caso contrário, a lógica de filtro funciona normalmente
     return filter === 'all' ? [...localImages, ...apiImages] : localImages;
-  }, [filter, localImages, apiImages]);
+  }, [filter, localImages, apiImages, searchActive]);
 
   const isLocalFilterEmpty = filter === 'local' && localImages.length === 0;
+
+  const isFilterDisabled = searchActive || loading;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -76,6 +96,7 @@ export const Gallery: React.FC = () => {
         <ToggleButtonGroup
           value={filter}
           exclusive
+          disabled={isFilterDisabled}
           onChange={(_, newFilter) => newFilter && setFilter(newFilter)}
           aria-label="image filter"
         >
